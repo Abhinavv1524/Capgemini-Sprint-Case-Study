@@ -1,0 +1,88 @@
+<div class="auth-page">
+  <div class="auth-left">
+    <div class="left-content">
+      <h1 class="brand-title mb-3"><span>Skill</span><strong>Sync</strong></h1>
+      <p class="lead-text mb-4">Join the mentorship network and start learning with experts.</p>
+      <ul class="feature-list">
+        <li>Create your learner, mentor, or admin account</li>
+        <li>Connect with domain experts and schedule sessions</li>
+        <li>Collaborate in groups and grow your skills</li>
+        <li>Build your profile and mentorship journey</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="auth-right">
+    <div class="form-panel">
+      <h2 class="h2 mb-2">Create account</h2>
+      <p class="text-body-secondary mb-4">Get started with SkillSync</p>
+
+      <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
+        <div class="mb-3">
+          <label for="name" class="form-label">Name</label>
+          <input
+            id="name"
+            type="text"
+            name="name"
+            class="form-control"
+            placeholder="Your full name"
+            [(ngModel)]="name"
+            required
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="email" class="form-label">Email</label>
+          <input
+            id="email"
+            type="email"
+            name="email"
+            class="form-control"
+            placeholder="you@example.com"
+            [(ngModel)]="email"
+            required
+            email
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input
+            id="password"
+            type="password"
+            name="password"
+            class="form-control"
+            placeholder="Create a password"
+            [(ngModel)]="password"
+            required
+            minlength="6"
+          />
+        </div>
+
+        <div class="alert alert-info py-2 mb-3">New accounts are created as Learner by default.</div>
+
+        @if (errorMessage) {
+          <div class="alert alert-danger py-2 mb-3">{{ errorMessage }}</div>
+        }
+
+        @if (successMessage) {
+          <div class="alert alert-success py-2 mb-3">{{ successMessage }}</div>
+        }
+
+        <button class="btn btn-danger w-100" type="submit" [disabled]="registerForm.invalid || submitting">
+          @if (!submitting) {
+            <span>CREATE ACCOUNT</span>
+          } @else {
+            <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
+            <span>Creating...</span>
+          }
+        </button>
+      </form>
+
+      <p class="text-center text-body-secondary mt-4 mb-0">
+        Already have an account?
+        <a routerLink="/login" class="text-decoration-none fw-semibold">Login</a>
+      </p>
+    </div>
+  </div>
+</div>

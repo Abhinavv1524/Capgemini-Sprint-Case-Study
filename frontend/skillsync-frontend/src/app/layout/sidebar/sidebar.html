@@ -1,0 +1,50 @@
+<aside class="sidebar">
+  <div class="brand px-4 py-4">
+    <span class="brand-light">Skill</span><span class="brand-accent">Sync</span>
+  </div>
+
+  <p class="tagline px-4 mb-3">Learn. Mentor. Grow.</p>
+
+  <nav class="nav-links px-2">
+    @if (!isAdmin()) {
+      <a class="nav-item" routerLink="/dashboard" routerLinkActive="active" (click)="onNavClick()">
+        <span class="icon">D</span>
+        <span>Dashboard</span>
+      </a>
+      <a class="nav-item" routerLink="/mentors" routerLinkActive="active" (click)="onNavClick()">
+        <span class="icon">M</span>
+        <span>Find Mentors</span>
+      </a>
+      <a class="nav-item" routerLink="/sessions" routerLinkActive="active" (click)="onNavClick()">
+        <span class="icon">S</span>
+        <span>My Sessions</span>
+      </a>
+      <a class="nav-item" routerLink="/groups" routerLinkActive="active" (click)="onNavClick()">
+        <span class="icon">G</span>
+        <span>Learning Groups</span>
+      </a>
+      <a class="nav-item" routerLink="/reviews" routerLinkActive="active" (click)="onNavClick()">
+        <span class="icon">R</span>
+        <span>Reviews</span>
+      </a>
+      <a class="nav-item" routerLink="/notifications" routerLinkActive="active" (click)="onNavClick()">
+        <span class="icon">N</span>
+        <span>Notifications</span>
+      </a>
+      <a class="nav-item" routerLink="/profile" routerLinkActive="active" (click)="onNavClick()">
+        <span class="icon">P</span>
+        <span>Profile</span>
+      </a>
+    }
+    @if (isAdmin()) {
+      <a class="nav-item" routerLink="/admin" routerLinkActive="active" (click)="onNavClick()">
+        <span class="icon">A</span>
+        <span>Admin Console</span>
+      </a>
+      <a class="nav-item" routerLink="/notifications" routerLinkActive="active" (click)="onNavClick()">
+        <span class="icon">N</span>
+        <span>Notifications</span>
+      </a>
+    }
+  </nav>
+</aside>

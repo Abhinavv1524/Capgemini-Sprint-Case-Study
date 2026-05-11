@@ -1,0 +1,394 @@
+name: skillsync-sprint
+
+x-common-service-env: &common-service-env
+  SPRING_PROFILES_ACTIVE: docker
+  SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+  EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+  MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+  SPRINGDOC_API_DOCS_PATH: /v3/api-docs
+  JWT_SECRET: skillsync-jwt-secret-key-2026-very-strong-minimum-32-bytes
+  JWT_EXPIRATION: 86400000
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: skillsync-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: skillsync_auth_db
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - skillsync-net
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: skillsync-rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - skillsync-net
+
+  zipkin:
+    image: openzipkin/zipkin:2.24
+    container_name: skillsync-zipkin
+    restart: always
+    ports:
+      - "9411:9411"
+    networks:
+      - skillsync-net
+
+  config-server:
+    build: ./skillsync-config-server
+    container_name: skillsync-config-server
+    restart: always
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      JWT_SECRET: skillsync-jwt-secret-key-2026-very-strong-minimum-32-bytes
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./skillsync-config-server/logs:/app/logs
+    depends_on:
+      - zipkin
+    networks:
+      - skillsync-net
+
+  eureka-server:
+    build: ./skillsync-eureka-server
+    container_name: skillsync-eureka-server
+    restart: always
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      JWT_SECRET: skillsync-jwt-secret-key-2026-very-strong-minimum-32-bytes
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+    ports:
+      - "8761:8761"
+    volumes:
+      - ./skillsync-eureka-server/logs:/app/logs
+    depends_on:
+      - config-server
+    networks:
+      - skillsync-net
+
+  auth-service:
+    build: ./skillsync-auth-service
+    container_name: skillsync-auth-service
+    restart: always
+    environment:
+      <<: *common-service-env
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/skillsync_auth_db?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./skillsync-auth-service/logs:/app/logs
+    depends_on:
+      - config-server
+      - eureka-server
+      - mysql
+      - zipkin
+    networks:
+      - skillsync-net
+
+  user-service:
+    build: ./skillsync-user-service
+    container_name: skillsync-user-service
+    restart: always
+    environment:
+      <<: *common-service-env
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/skillsync_user_db?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    ports:
+      - "8082:8082"
+    volumes:
+      - ./skillsync-user-service/logs:/app/logs
+    depends_on:
+      - config-server
+      - eureka-server
+      - mysql
+      - zipkin
+    networks:
+      - skillsync-net
+
+  mentor-service:
+    build: ./skillsync-mentor-service
+    container_name: skillsync-mentor-service
+    restart: always
+    environment:
+      <<: *common-service-env
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/skillsync_mentor_db?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    ports:
+      - "8083:8083"
+    volumes:
+      - ./skillsync-mentor-service/logs:/app/logs
+    depends_on:
+      - config-server
+      - eureka-server
+      - mysql
+      - zipkin
+    networks:
+      - skillsync-net
+
+  skill-service:
+    build: ./skillsync-skill-service
+    container_name: skillsync-skill-service
+    restart: always
+    environment:
+      <<: *common-service-env
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/skillsync_skill_db?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    ports:
+      - "8084:8084"
+    volumes:
+      - ./skillsync-skill-service/logs:/app/logs
+    depends_on:
+      - config-server
+      - eureka-server
+      - mysql
+      - zipkin
+    networks:
+      - skillsync-net
+
+  session-service:
+    build: ./skillsync-session-service
+    container_name: skillsync-session-service
+    restart: always
+    environment:
+      <<: *common-service-env
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/skillsync_session_db?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+    ports:
+      - "8085:8085"
+    volumes:
+      - ./skillsync-session-service/logs:/app/logs
+    depends_on:
+      - config-server
+      - eureka-server
+      - mysql
+      - rabbitmq
+      - zipkin
+    networks:
+      - skillsync-net
+
+  notification-service:
+    build: ./skillsync-notification-service
+    container_name: skillsync-notification-service
+    restart: always
+    environment:
+      <<: *common-service-env
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+      MAIL_HOST: ${MAIL_HOST}
+      MAIL_PORT: ${MAIL_PORT}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+      MAIL_SMTP_AUTH: ${MAIL_SMTP_AUTH}
+      MAIL_SMTP_STARTTLS: ${MAIL_SMTP_STARTTLS}
+      APP_MAIL_FROM: ${APP_MAIL_FROM}
+    ports:
+      - "8086:8086"
+    volumes:
+      - ./skillsync-notification-service/logs:/app/logs
+    depends_on:
+      - config-server
+      - eureka-server
+      - rabbitmq
+      - zipkin
+    networks:
+      - skillsync-net
+
+  review-service:
+    build: ./skillsync-review-service
+    container_name: skillsync-review-service
+    restart: always
+    environment:
+      <<: *common-service-env
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/skillsync_review_db?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    ports:
+      - "8087:8087"
+    volumes:
+      - ./skillsync-review-service/logs:/app/logs
+    depends_on:
+      - config-server
+      - eureka-server
+      - mysql
+      - zipkin
+    networks:
+      - skillsync-net
+
+  group-service:
+    build: ./skillsync-group-service
+    container_name: skillsync-group-service
+    restart: always
+    environment:
+      <<: *common-service-env
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/skillsync_group_db?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    ports:
+      - "8088:8088"
+    volumes:
+      - ./skillsync-group-service/logs:/app/logs
+    depends_on:
+      - config-server
+      - eureka-server
+      - mysql
+      - zipkin
+    networks:
+      - skillsync-net
+
+  api-gateway:
+    build: ./skillsync-api-gateway
+    container_name: skillsync-api-gateway
+    restart: always
+    environment:
+      <<: *common-service-env
+      SPRING_CLOUD_CONFIG_ENABLED: "false"
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./skillsync-api-gateway/logs:/app/logs
+    depends_on:
+      - config-server
+      - eureka-server
+      - auth-service
+      - user-service
+      - mentor-service
+      - skill-service
+      - session-service
+      - review-service
+      - group-service
+      - notification-service
+      - zipkin
+    networks:
+      - skillsync-net
+
+  frontend:
+    build: ../Capgemini Sprint Frontend/skillsync-frontend
+    container_name: skillsync-frontend
+    restart: always
+    ports:
+      - "4200:80"
+    depends_on:
+      - api-gateway
+    networks:
+      - skillsync-net
+
+  loki:
+    image: grafana/loki:2.9.8
+    container_name: skillsync-loki
+    restart: always
+    profiles: ["observability"]
+    command: -config.file=/etc/loki/local-config.yaml
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./loki-config.yml:/etc/loki/local-config.yaml:ro
+      - loki-data:/loki
+    networks:
+      - skillsync-net
+
+  promtail:
+    image: grafana/promtail:2.9.8
+    container_name: skillsync-promtail
+    restart: always
+    profiles: ["observability"]
+    command: -config.file=/etc/promtail/config.yml
+    volumes:
+      - ./promtail-config.yml:/etc/promtail/config.yml:ro
+      - ./:/workspace:ro
+      - promtail-data:/promtail
+    depends_on:
+      - loki
+    networks:
+      - skillsync-net
+
+  grafana:
+    image: grafana/grafana:11.1.4
+    container_name: skillsync-grafana
+    restart: always
+    profiles: ["observability"]
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+    depends_on:
+      - loki
+    networks:
+      - skillsync-net
+
+  sonarqube-db:
+    image: postgres:15
+    container_name: skillsync-sonarqube-db
+    restart: always
+    profiles: ["quality"]
+    environment:
+      POSTGRES_USER: sonar
+      POSTGRES_PASSWORD: sonar
+      POSTGRES_DB: sonarqube
+    volumes:
+      - sonarqube-postgres:/var/lib/postgresql/data
+    networks:
+      - skillsync-net
+
+  sonarqube:
+    image: sonarqube:lts-community
+    container_name: skillsync-sonarqube
+    restart: always
+    profiles: ["quality"]
+    depends_on:
+      - sonarqube-db
+    ports:
+      - "9000:9000"
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://sonarqube-db:5432/sonarqube
+      SONAR_JDBC_USERNAME: sonar
+      SONAR_JDBC_PASSWORD: sonar
+    volumes:
+      - sonarqube-data:/opt/sonarqube/data
+      - sonarqube-extensions:/opt/sonarqube/extensions
+      - sonarqube-logs:/opt/sonarqube/logs
+    networks:
+      - skillsync-net
+
+networks:
+  skillsync-net:
+    name: skillsync-net
+    driver: bridge
+
+volumes:
+  mysql-data:
+  loki-data:
+  promtail-data:
+  grafana-data:
+  sonarqube-postgres:
+  sonarqube-data:
+  sonarqube-extensions:
+  sonarqube-logs:

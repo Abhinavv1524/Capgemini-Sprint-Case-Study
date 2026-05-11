@@ -1,0 +1,25 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /promtail/positions.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+
+scrape_configs:
+  - job_name: skillsync-file-logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: skillsync
+          __path__: /workspace/*/logs/*.log
+
+    pipeline_stages:
+      - regex:
+          expression: 'level=(?P<level>\w+).*service=(?P<service>[\w-]+)'
+      - labels:
+          service:
+          level:

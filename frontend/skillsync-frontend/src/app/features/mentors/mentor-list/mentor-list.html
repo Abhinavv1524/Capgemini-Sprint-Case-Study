@@ -1,0 +1,101 @@
+<div class="page-head mb-4">
+  <h2 class="h3 mb-1">Find a Mentor</h2>
+  <p class="text-body-secondary mb-0">Discover expert mentors matched to your learning goals.</p>
+</div>
+
+<div class="card border-0 shadow-sm mb-4">
+  <div class="card-body p-4">
+    <div class="row g-3">
+      <div class="col-12 col-lg-8">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search by skill, topic, bio..."
+          [ngModel]="searchTerm"
+          (ngModelChange)="onSearchTermChange($event)"
+        />
+      </div>
+      <div class="col-6 col-lg-2">
+        <select class="form-select" [ngModel]="minExperience" (ngModelChange)="onMinExperienceChange($event)">
+          <option [ngValue]="0">Experience</option>
+          <option [ngValue]="3">3+ yrs</option>
+          <option [ngValue]="5">5+ yrs</option>
+          <option [ngValue]="8">8+ yrs</option>
+        </select>
+      </div>
+      <div class="col-6 col-lg-2">
+        <select class="form-select" [ngModel]="maxRate" (ngModelChange)="onMaxRateChange($event)">
+          <option [ngValue]="0">Rate</option>
+          <option [ngValue]="600">Up to 600</option>
+          <option [ngValue]="800">Up to 800</option>
+          <option [ngValue]="1000">Up to 1000</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="d-flex flex-wrap gap-2 mt-3">
+      <button class="btn btn-outline-danger btn-sm" (click)="clearFilters()">Clear All</button>
+      <select class="form-select form-select-sm sort-select" [ngModel]="sortBy" (ngModelChange)="onSortChange($event)">
+        <option value="relevance">Most Relevant</option>
+        <option value="rateLowHigh">Rate: Low to High</option>
+        <option value="experienceHighLow">Experience: High to Low</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+@if (loading()) {
+  <div class="text-center py-5">
+    <div class="spinner-border text-primary" role="status" aria-hidden="true"></div>
+    <p class="text-body-secondary mt-3 mb-0">Loading mentors...</p>
+  </div>
+} @else if (errorMessage()) {
+  <div class="alert alert-danger mb-0">{{ errorMessage() }}</div>
+} @else if (getFilteredMentors().length === 0) {
+  <div class="alert alert-warning mb-0">No mentors found for selected filters.</div>
+} @else {
+  <div class="row g-3">
+    @for (mentor of paginatedMentors(); track mentor.id) {
+      <div class="col-12 col-xl-4 col-lg-6">
+          <div class="card border-0 shadow-sm mentor-card h-100">
+            <div class="card-body p-3">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <h3 class="h5 mb-1">
+                  {{ mentor.userName || ('Mentor #' + mentor.id) }}
+                </h3>
+                <span class="badge text-bg-success">Approved</span>
+              </div>
+              <p class="text-body-secondary mb-2">{{ mentor.experience }} yrs experience</p>
+              <p class="mentor-bio mb-3" [title]="mentor.bio">{{ mentor.bio }}</p>
+            <div class="d-flex justify-content-between align-items-center">
+              <p class="mentor-rate mb-0">&#8377;{{ mentor.hourlyRate }}/hr</p>
+              <div class="d-flex gap-2">
+                <button class="btn btn-outline-danger btn-sm" (click)="viewMentor(mentor)">View</button>
+                <button class="btn btn-danger btn-sm" (click)="bookMentor(mentor)" [disabled]="!canBookMentor()">Book</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="pagination-wrap mt-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <p class="mb-0 text-body-secondary small">
+      Showing {{ paginatedMentors().length }} of {{ getFilteredMentors().length }} mentors
+    </p>
+    <div class="d-flex gap-1 align-items-center">
+      <button class="btn btn-sm btn-outline-secondary" (click)="previousPage()" [disabled]="currentPage === 1">
+        Prev
+      </button>
+      @for (page of pageNumbers(); track page) {
+        <button class="btn btn-sm" [class]="page === currentPage ? 'btn-danger' : 'btn-outline-secondary'" (click)="goToPage(page)">
+          {{ page }}
+        </button>
+      }
+      <button class="btn btn-sm btn-outline-secondary" (click)="nextPage()" [disabled]="currentPage === totalPages()">
+        Next
+      </button>
+    </div>
+  </div>
+}

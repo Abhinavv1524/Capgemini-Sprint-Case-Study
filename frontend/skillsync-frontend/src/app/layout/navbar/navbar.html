@@ -1,0 +1,18 @@
+<header class="topbar shadow-sm">
+  <div class="left-meta">
+    <button class="menu-toggle" type="button" (click)="toggleMenu()" aria-label="Open navigation menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <h1 class="title mb-0">SkillSync Workspace</h1>
+    <p class="subtitle mb-0">Role-aware mentorship and peer learning dashboard</p>
+  </div>
+  <div class="topbar-right d-flex align-items-center gap-3">
+    <div class="text-end">
+      <div class="who">{{ displayLabel }}</div>
+      <div class="small text-body-secondary">{{ roleLabel }}</div>
+    </div>
+    <button class="btn btn-outline-secondary btn-sm" (click)="logout()">Logout</button>
+  </div>
+</header>

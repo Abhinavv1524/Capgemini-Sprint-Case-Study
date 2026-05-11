@@ -1,0 +1,61 @@
+:host {
+  display: block;
+}
+
+.stat-card {
+  border-radius: 0.85rem;
+}
+
+.stat-action {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  padding: 0;
+  border: 0;
+}
+
+.stat-action:hover {
+  transform: translateY(-1px);
+  transition: transform 120ms ease;
+}
+
+.stat-action:focus-visible {
+  outline: 3px solid rgba(236, 0, 66, 0.25);
+  outline-offset: 2px;
+}
+
+.stat-sessions {
+  border-left: 6px solid #0d6efd !important;
+}
+
+.stat-mentors {
+  border-left: 6px solid #198754 !important;
+}
+
+.stat-ratings {
+  border-left: 6px solid #fd7e14 !important;
+}
+
+.stat-groups {
+  border-left: 6px solid #6f42c1 !important;
+}
+
+.stat-completed {
+  border-left: 6px solid #ec0042 !important;
+}
+
+.stat-approvals {
+  border-left: 6px solid #ffc107 !important;
+}
+
+.stat-label {
+  color: #7a829f;
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.stat-value {
+  color: #10193a;
+  font-size: 2rem;
+  font-weight: 700;
+}

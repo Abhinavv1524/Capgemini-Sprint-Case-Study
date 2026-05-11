@@ -1,0 +1,31 @@
+:host {
+  display: block;
+}
+
+.pagination-wrap {
+  border-top: 1px solid #e6e9f4;
+  padding-top: 0.75rem;
+}
+
+.created-col {
+  white-space: nowrap;
+}
+
+.create-box {
+  border: 1px solid #e6e9f6;
+  border-radius: 0.7rem;
+  background: #f8f9fe;
+}
+
+.group-card {
+  border-radius: 0.8rem;
+}
+
+.nav-tabs .nav-link {
+  color: #5e6789;
+  font-weight: 600;
+}
+
+.nav-tabs .nav-link.active {
+  color: #ec0042;
+}

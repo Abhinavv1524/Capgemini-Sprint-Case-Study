@@ -1,0 +1,28 @@
+<section class="mb-4">
+  <h2 class="h3 mb-1">Notifications</h2>
+  <p class="text-body-secondary mb-0">Track platform and session updates in one place.</p>
+</section>
+
+@if (notifications().length === 0) {
+  <div class="alert alert-warning mb-0">No notifications yet. Activity will appear here.</div>
+} @else {
+  <div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+      @for (item of notifications(); track item.id) {
+        <article class="notification-item p-3 p-md-4">
+          <div class="d-flex justify-content-between align-items-start gap-3">
+            <div class="d-flex gap-3">
+              <span class="icon-box">{{ icon(item.type) }}</span>
+              <div>
+                <h3 class="h6 mb-1">{{ item.title }}</h3>
+                <p class="text-body-secondary mb-1" [innerHTML]="formattedDescription(item.description)"></p>
+                <small class="text-body-secondary">{{ item.type }}</small>
+              </div>
+            </div>
+            <small class="text-body-secondary">{{ item.createdAt | date: 'medium' }}</small>
+          </div>
+        </article>
+      }
+    </div>
+  </div>
+}

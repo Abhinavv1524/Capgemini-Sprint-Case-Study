@@ -1,0 +1,55 @@
+@if (loading()) {
+  <div class="text-center py-5">
+    <div class="spinner-border text-primary" role="status" aria-hidden="true"></div>
+    <p class="text-body-secondary mt-2 mb-0">Loading mentor...</p>
+  </div>
+} @else if (!mentor()) {
+  <div class="alert alert-warning">Mentor not found.</div>
+} @else {
+  <div class="card border-0 shadow-sm">
+    <div class="card-body p-4">
+      <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-4">
+        <div>
+          <h2 class="h4 mb-1">{{ user()?.name || 'Mentor Profile' }}</h2>
+          <p class="text-body-secondary mb-0">{{ user()?.email || ('Mentor #' + mentor().id) }}</p>
+        </div>
+        @if (canBookSession()) {
+          <button class="btn btn-primary btn-sm" (click)="bookSession()">Book Session</button>
+        }
+      </div>
+
+      <div class="row g-3">
+        <div class="col-sm-6">
+          <p class="mb-1 text-body-secondary">Mentor ID</p>
+          <p class="mb-0 fw-semibold">{{ mentor().id }}</p>
+        </div>
+        <div class="col-sm-6">
+          <p class="mb-1 text-body-secondary">User ID</p>
+          <p class="mb-0 fw-semibold">{{ mentor().userId }}</p>
+        </div>
+        @if (user()?.skills) {
+          <div class="col-sm-12">
+            <p class="mb-1 text-body-secondary">Skills</p>
+            <p class="mb-0">{{ user().skills }}</p>
+          </div>
+        }
+        <div class="col-sm-12">
+          <p class="mb-1 text-body-secondary">Bio</p>
+          <p class="mb-0">{{ mentor().bio }}</p>
+        </div>
+        <div class="col-sm-6">
+          <p class="mb-1 text-body-secondary">Experience</p>
+          <p class="mb-0 fw-semibold">{{ mentor().experience }} years</p>
+        </div>
+        <div class="col-sm-6">
+          <p class="mb-1 text-body-secondary">Rate</p>
+          <p class="mb-0 fw-semibold">&#8377;{{ mentor().hourlyRate }}</p>
+        </div>
+        <div class="col-sm-6">
+          <p class="mb-1 text-body-secondary">Status</p>
+          <p class="mb-0 fw-semibold text-capitalize">{{ mentor().status || 'N/A' }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+}

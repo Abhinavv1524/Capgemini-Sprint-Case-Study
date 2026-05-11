@@ -1,0 +1,68 @@
+<div class="auth-page">
+  <div class="auth-left">
+    <div class="left-content">
+      <h1 class="brand-title mb-3"><span>Skill</span><strong>Sync</strong></h1>
+      <p class="lead-text mb-4">Peer Learning and Mentor Matching Platform</p>
+      <ul class="feature-list">
+        <li>Find expert mentors matched to your goals</li>
+        <li>Book 1-on-1 sessions at your convenience</li>
+        <li>Join peer learning groups and communities</li>
+        <li>Track your growth with ratings and reviews</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="auth-right">
+    <div class="form-panel">
+      <h2 class="h2 mb-2">Welcome back</h2>
+      <p class="text-body-secondary mb-4">Sign in to your SkillSync account</p>
+
+      <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+        <div class="mb-3">
+          <label for="email" class="form-label">Email Address</label>
+          <input
+            id="email"
+            type="email"
+            name="email"
+            class="form-control"
+            placeholder="you@example.com"
+            [(ngModel)]="email"
+            required
+            email
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input
+            id="password"
+            type="password"
+            name="password"
+            class="form-control"
+            placeholder="Enter your password"
+            [(ngModel)]="password"
+            required
+          />
+        </div>
+
+        @if (errorMessage) {
+          <div class="alert alert-danger py-2 mb-3">{{ errorMessage }}</div>
+        }
+
+        <button class="btn btn-danger w-100" type="submit" [disabled]="loginForm.invalid || submitting">
+          @if (!submitting) {
+            <span>SIGN IN</span>
+          } @else {
+            <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
+            <span>Signing in...</span>
+          }
+        </button>
+      </form>
+
+      <p class="text-center text-body-secondary mt-4 mb-0">
+        Do not have an account?
+        <a routerLink="/register" class="text-decoration-none fw-semibold">Create one free</a>
+      </p>
+    </div>
+  </div>
+</div>

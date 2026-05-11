@@ -1,0 +1,86 @@
+:host {
+  display: block;
+}
+
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  background: #f5f6fb;
+}
+
+.auth-left {
+  width: 48%;
+  background: linear-gradient(155deg, #151a3c 0%, #1a1f43 55%, #b1003a 100%);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem;
+}
+
+.left-content {
+  max-width: 430px;
+}
+
+.brand-title {
+  font-size: 3rem;
+  line-height: 1.1;
+}
+
+.brand-title span {
+  color: #ffffff;
+}
+
+.brand-title strong {
+  color: #ff6b00;
+}
+
+.lead-text {
+  color: #cfd4ef;
+  font-size: 1.15rem;
+}
+
+.feature-list {
+  margin: 0;
+  padding-left: 1rem;
+  display: grid;
+  gap: 0.8rem;
+  color: #e8ecff;
+}
+
+.auth-right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.form-panel {
+  width: 100%;
+  max-width: 430px;
+  background: #ffffff;
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 8px 22px rgba(15, 24, 56, 0.08);
+}
+
+@media (max-width: 992px) {
+  .auth-page {
+    flex-direction: column;
+  }
+
+  .auth-left {
+    width: 100%;
+    padding: 2rem 1.25rem;
+  }
+
+  .auth-right {
+    width: 100%;
+    padding: 1rem;
+  }
+
+  .brand-title {
+    font-size: 2.25rem;
+  }
+}

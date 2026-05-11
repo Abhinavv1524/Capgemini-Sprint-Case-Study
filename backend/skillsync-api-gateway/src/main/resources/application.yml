@@ -1,0 +1,165 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  config:
+    import: "optional:configserver:http://config-server:8888"
+
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: false
+
+      routes:
+
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/api/users/**
+        - id: user-service-docs
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/v3/api-docs/user-service
+          filters:
+            - RewritePath=/v3/api-docs/user-service, /v3/api-docs
+
+
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/api/auth/**
+        - id: auth-service-docs
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/v3/api-docs/auth-service
+          filters:
+            - RewritePath=/v3/api-docs/auth-service, /v3/api-docs
+
+
+        - id: mentor-service
+          uri: lb://MENTOR-SERVICE
+          predicates:
+            - Path=/api/mentors/**
+        - id: mentor-service-docs
+          uri: lb://MENTOR-SERVICE
+          predicates:
+            - Path=/v3/api-docs/mentor-service
+          filters:
+            - RewritePath=/v3/api-docs/mentor-service, /v3/api-docs
+
+
+        - id: skill-service
+          uri: lb://SKILL-SERVICE
+          predicates:
+            - Path=/api/skills/**
+        - id: skill-service-docs
+          uri: lb://SKILL-SERVICE
+          predicates:
+            - Path=/v3/api-docs/skill-service
+          filters:
+            - RewritePath=/v3/api-docs/skill-service, /v3/api-docs
+
+
+        - id: session-service
+          uri: lb://SESSION-SERVICE
+          predicates:
+            - Path=/api/sessions/**
+        - id: session-service-docs
+          uri: lb://SESSION-SERVICE
+          predicates:
+            - Path=/v3/api-docs/session-service
+          filters:
+            - RewritePath=/v3/api-docs/session-service, /v3/api-docs
+
+
+        - id: review-service
+          uri: lb://REVIEW-SERVICE
+          predicates:
+            - Path=/api/reviews/**
+        - id: review-service-docs
+          uri: lb://REVIEW-SERVICE
+          predicates:
+            - Path=/v3/api-docs/review-service
+          filters:
+            - RewritePath=/v3/api-docs/review-service, /v3/api-docs
+
+
+        - id: group-service
+          uri: lb://GROUP-SERVICE
+          predicates:
+            - Path=/api/groups/**
+        - id: group-service-docs
+          uri: lb://GROUP-SERVICE
+          predicates:
+            - Path=/v3/api-docs/group-service
+          filters:
+            - RewritePath=/v3/api-docs/group-service, /v3/api-docs
+
+
+        - id: notification-service
+          uri: lb://NOTIFICATION-SERVICE
+          predicates:
+            - Path=/api/notifications/**
+        - id: notification-service-docs
+          uri: lb://NOTIFICATION-SERVICE
+          predicates:
+            - Path=/v3/api-docs/notification-service
+          filters:
+            - RewritePath=/v3/api-docs/notification-service, /v3/api-docs
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka/
+jwt:
+  secret: ${JWT_SECRET:skillsync-jwt-secret-key-2026-very-strong-minimum-32-bytes}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+  tracing:
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: http://zipkin:9411/api/v2/spans
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    disable-swagger-default-url: true
+    persistAuthorization: true
+    urls:
+      - name: auth-service
+        url: /v3/api-docs/auth-service
+      - name: user-service
+        url: /v3/api-docs/user-service
+      - name: session-service
+        url: /v3/api-docs/session-service
+      - name: review-service
+        url: /v3/api-docs/review-service
+      - name: mentor-service
+        url: /v3/api-docs/mentor-service
+      - name: skill-service
+        url: /v3/api-docs/skill-service
+      - name: group-service
+        url: /v3/api-docs/group-service
+      - name: notification-service
+        url: /v3/api-docs/notification-service
+
+logging:
+  file:
+    name: logs/${spring.application.name}.log
+  pattern:
+    console: "%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} level=%p service=${spring.application.name} logger=%logger{36} - %m%n"
+    file: "%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} level=%p service=${spring.application.name} logger=%logger{36} - %m%n"

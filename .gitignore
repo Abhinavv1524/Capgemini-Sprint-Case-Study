@@ -1,0 +1,143 @@
+# =========================================================
+# SkillSync Git Ignore
+# Repo structure:
+# - backend/   Spring Boot microservices
+# - frontend/  Angular application
+# - docs/      diagrams and documentation
+# =========================================================
+
+# =========================================================
+# Secrets / Local Environment
+# =========================================================
+.env
+.env.*
+!.env.example
+*.secret
+*.key
+*.pem
+application-local.yml
+application-local.yaml
+application-dev.yml
+application-dev.yaml
+application-prod.yml
+application-prod.yaml
+
+# Keep normal service application.yml files trackable.
+!backend/**/src/main/resources/application.yml
+!backend/**/src/main/resources/application.yaml
+!backend/**/src/main/resources/application.properties
+
+# =========================================================
+# Java / Spring Boot / Maven
+# =========================================================
+backend/**/target/
+backend/**/*.class
+backend/**/logs/
+backend/**/*.log
+
+.m2/
+.m2-local/
+.mvn-home/
+backend/**/.m2/
+backend/**/.m2-local/
+backend/**/.mvn-home/
+
+# Maven wrapper is useful only if deliberately added. Current project does not need local copies.
+mvnw
+mvnw.cmd
+
+# =========================================================
+# Frontend / Angular / Node
+# =========================================================
+frontend/**/node_modules/
+frontend/**/dist/
+frontend/**/coverage/
+frontend/**/.angular/
+frontend/**/.cache/
+frontend/**/*.tsbuildinfo
+
+# Keep dependency lock files trackable.
+!frontend/**/package-lock.json
+!frontend/**/package.json
+
+# =========================================================
+# IDE / Editor Files
+# =========================================================
+.idea/
+*.iml
+.vscode/
+
+.metadata/
+**/.metadata/
+.project
+.classpath
+.settings/
+**/.project
+**/.classpath
+**/.settings/
+
+# =========================================================
+# OS Files
+# =========================================================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# =========================================================
+# Logs / Runtime Files
+# =========================================================
+logs/
+*.log
+*.pid
+*.seed
+*.pid.lock
+
+# =========================================================
+# Build / Cache / Reports
+# =========================================================
+build/
+out/
+.cache/
+test-output/
+surefire-reports/
+**/surefire-reports/
+
+.sonar/
+.scannerwork/
+**/.sonar/
+**/.scannerwork/
+
+# =========================================================
+# Temporary / Backup Files
+# =========================================================
+*.swp
+*.swo
+*.bak
+*.tmp
+*.temp
+~$*
+
+# =========================================================
+# Documentation Working Files
+# =========================================================
+_docx_extract/
+**/_docx_extract/
+
+# Keep final documentation and diagrams trackable.
+!docs/**/*.md
+!docs/**/*.png
+!docs/**/*.jpg
+!docs/**/*.jpeg
+!docs/**/*.svg
+!docs/**/*.pdf
+
+# =========================================================
+# Database Files
+# =========================================================
+*.db
+*.sqlite
+*.sqlite3
+
+# Keep SQL scripts used by Docker or setup.
+!docker/**/*.sql
+!backend/**/*.sql

@@ -1,0 +1,11 @@
+<div class="app-shell" [class.sidebar-open]="mobileMenuOpen">
+  <app-sidebar class="mobile-sidebar" (navSelect)="closeMobileMenu()"></app-sidebar>
+  <button class="sidebar-backdrop" type="button" (click)="closeMobileMenu()" aria-label="Close menu"></button>
+
+  <div class="app-content">
+    <app-navbar (menuToggle)="toggleMobileMenu()"></app-navbar>
+    <div class="content-area">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

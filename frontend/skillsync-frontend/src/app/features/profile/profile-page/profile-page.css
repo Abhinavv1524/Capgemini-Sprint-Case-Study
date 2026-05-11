@@ -1,0 +1,74 @@
+:host {
+  display: block;
+}
+
+.skill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  max-height: 180px;
+  overflow: auto;
+  padding: 0.25rem;
+}
+
+.skill-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border: 1px solid #d8dceb;
+  background: #fff;
+  border-radius: 999px;
+  padding: 0.25rem 0.6rem;
+  font-weight: 600;
+  color: #4a557a;
+}
+
+.skill-dropdown {
+  position: relative;
+}
+
+.skill-dropdown > summary {
+  list-style: none;
+}
+
+.skill-dropdown > summary::-webkit-details-marker {
+  display: none;
+}
+
+.skill-dropdown-panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.4rem);
+  width: min(420px, 90vw);
+  background: #fff;
+  border: 1px solid #e3e7f3;
+  border-radius: 12px;
+  z-index: 5;
+}
+
+.skill-dropdown-list {
+  max-height: 240px;
+  overflow: auto;
+}
+
+.skill-option {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.35rem;
+  border-radius: 8px;
+  font-weight: 600;
+  color: #4a557a;
+}
+
+.skill-option:hover {
+  background: #f6f7fb;
+}
+
+.selected-skill-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+/* Keep old styles for compatibility; dropdown is primary UI now. */

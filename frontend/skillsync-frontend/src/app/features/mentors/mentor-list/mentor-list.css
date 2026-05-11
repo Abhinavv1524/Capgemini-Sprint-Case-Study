@@ -1,0 +1,35 @@
+:host {
+  display: block;
+}
+
+.page-head h2 {
+  font-weight: 700;
+  color: #121a3a;
+}
+
+.sort-select {
+  width: 180px;
+}
+
+.mentor-card {
+  border-radius: 0.8rem;
+}
+
+.mentor-bio {
+  color: #4b567a;
+  min-height: 66px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.mentor-rate {
+  font-weight: 700;
+  color: #0d183a;
+}
+
+.pagination-wrap {
+  border-top: 1px solid #e6e9f4;
+  padding-top: 1rem;
+}
